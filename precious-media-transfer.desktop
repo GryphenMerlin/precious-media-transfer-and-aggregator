@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Precious Media Transfer
+Comment=Scan, deduplicate, and transfer media to SSD
+Exec=bash %INSTALL_PATH%/run_gui.sh
+Icon=%INSTALL_PATH%/assets/icon.png
+Terminal=false
+Categories=Utility;Application;
