@@ -1,0 +1,26 @@
+# Core dependencies
+python-dotenv==1.0.0
+click==8.1.7
+
+# File and media handling
+Pillow==10.1.0
+python-magic==0.4.27
+
+# Google Drive API
+google-auth-httplib2==0.2.0
+google-auth-oauthlib==1.2.0
+google-api-python-client==2.108.0
+
+# GUI (PyQt5)
+PyQt5==5.15.10
+
+# Utilities
+tqdm==4.66.2
+colorama==0.4.6
+
+# Development
+pytest==7.4.4
+pytest-cov==4.1.0
+black==23.12.1
+flake8==6.1.0
+mypy==1.8.0
