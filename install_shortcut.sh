@@ -24,10 +24,33 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
     cat > "$DESKTOP/$SHORTCUT_NAME.command" << 'EOF'
 #!/bin/bash
 cd "PROJECT_DIR_PLACEHOLDER"
+
+# Find Python 3
+if command -v python3 &> /dev/null; then
+    PYTHON_CMD="python3"
+elif command -v python &> /dev/null; then
+    PYTHON_CMD="python"
+else
+    if [ -f "/usr/local/bin/python3" ]; then
+        PYTHON_CMD="/usr/local/bin/python3"
+    elif [ -f "/opt/homebrew/bin/python3" ]; then
+        PYTHON_CMD="/opt/homebrew/bin/python3"
+    else
+        echo "Error: Python 3 not found. Please install Python 3."
+        echo ""
+        echo "Install with: brew install python3"
+        echo "Or download from: https://www.python.org"
+        sleep 5
+        exit 1
+    fi
+fi
+
+# Activate virtual environment if it exists
 if [ -d "venv/bin" ]; then
     source venv/bin/activate
 fi
-python src/gui.py
+
+"$PYTHON_CMD" src/gui.py
 EOF
     
     # Replace placeholder
@@ -83,7 +106,7 @@ EOF
     
 else
     echo "✗ Unsupported OS: $OSTYPE"
-    echo "Please create a shortcut manually by linking to: python $PROJECT_DIR/src/gui.py"
+    echo "Please create a shortcut manually by linking to: python3 $PROJECT_DIR/src/gui.py"
     exit 1
 fi
 
@@ -91,5 +114,7 @@ echo ""
 echo "✓ Installation complete!"
 echo ""
 echo "First time setup (if needed):"
-echo "  1. pip install -r requirements.txt"
-echo "  2. Then run the shortcut"
+echo "  1. Install Python 3: brew install python3"
+echo "  2. cd $PROJECT_DIR"
+echo "  3. pip3 install -r requirements.txt"
+echo "  4. Then run the shortcut"
