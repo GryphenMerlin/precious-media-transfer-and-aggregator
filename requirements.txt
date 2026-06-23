@@ -3,7 +3,7 @@ python-dotenv==1.0.0
 click==8.1.7
 
 # File and media handling
-Pillow==11.0.0
+Pillow>=12.0.0
 python-magic==0.4.27
 
 # File transfer and system utilities
