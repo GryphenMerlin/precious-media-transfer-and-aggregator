@@ -1,13 +1,13 @@
 # Precious Media Transfer and Aggregator
 
-An app that scans your Mac and connected devices for media (photos and videos), transfers them to Google Drive, and checks for duplicates.
+An app that scans your Mac and connected devices for media (photos and videos), transfers them to an attached SSD, and checks for duplicates.
 
 ## Features
 
 - 🔍 **Smart Scanning**: Recursively scans Mac and connected devices for photos and videos
-- 📤 **Google Drive Integration**: Automatically uploads media to Google Drive
-- 🔐 **Duplicate Detection**: Uses file hashing to identify and eliminate duplicates
-- ⚡ **Efficient Transfers**: Only uploads new/non-duplicate files
+- 💾 **SSD Transfer**: Automatically copies media to an attached external SSD
+- 🔍 **Duplicate Detection**: Uses file hashing to identify and eliminate duplicates
+- ⚡ **Efficient Transfers**: Only copies new/non-duplicate files
 - 🖥️ **Dual Interface**: CLI for automation, GUI for ease of use
 
 ## Quick Start
@@ -15,7 +15,7 @@ An app that scans your Mac and connected devices for media (photos and videos), 
 ### Prerequisites
 - Python 3.9+
 - macOS
-- Google Drive account (for storage)
+- External SSD (for storage)
 
 ### Installation
 
@@ -31,14 +31,14 @@ pip install -r requirements.txt
 # Scan local media
 python src/main.py scan ~/Pictures ~/Movies
 
-# Upload to Google Drive
-python src/main.py upload --output-dir "Media Archive"
+# Transfer to SSD
+python src/main.py transfer --ssd-path /Volumes/MyExternalSSD --output-dir "Media Archive"
 
 # Check for duplicates
-python src/main.py dedupe --source ~/Pictures
+python src/main.py dedupe ~/Pictures
 
-# Full pipeline: scan, dedupe, upload
-python src/main.py full-sync ~/Pictures --output-dir "Media Archive"
+# Full pipeline: scan, dedupe, transfer to SSD
+python src/main.py full-sync ~/Pictures --ssd-path /Volumes/MyExternalSSD --output-dir "Media Archive"
 ```
 
 ### GUI Usage
@@ -55,7 +55,7 @@ src/
 ├── gui.py               # GUI entry point (PyQt5)
 ├── scanner/             # File discovery and metadata extraction
 ├── deduplication/       # Duplicate detection via hashing
-├── transfer/            # Google Drive API integration
+├── transfer/            # SSD file transfer logic
 └── utils/               # Helpers (logging, config, etc.)
 
 tests/                   # Unit and integration tests

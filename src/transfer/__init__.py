@@ -1,1 +1,1 @@
-"""File transfer module for Google Drive integration."""
+"""File transfer module for SSD integration."""

@@ -5,8 +5,8 @@ CLI entry point for Precious Media Transfer and Aggregator.
 Usage:
   python main.py scan <source_paths>...
   python main.py dedupe <source_path>
-  python main.py upload --output-dir <dir_name>
-  python main.py full-sync <source_paths>... --output-dir <dir_name>
+  python main.py transfer --ssd-path <path> --output-dir <dir>
+  python main.py full-sync <source_paths>... --ssd-path <path> --output-dir <dir>
 """
 
 import click
@@ -14,7 +14,7 @@ import logging
 from pathlib import Path
 from scanner.file_scanner import FileScanner
 from deduplication.deduplicator import Deduplicator
-from transfer.drive_uploader import DriveUploader
+from transfer.ssd_transfer import SSDTransfer
 
 # Setup logging
 logging.basicConfig(
@@ -67,35 +67,52 @@ def dedupe(source_path):
 
 
 @cli.command()
-@click.option('--output-dir', required=True, help='Google Drive folder name')
-def upload(output_dir):
-    """Upload media to Google Drive."""
-    click.echo(f"Uploading to Google Drive folder: {output_dir}")
+@click.option('--ssd-path', required=True, type=click.Path(), help='Path to external SSD')
+@click.option('--output-dir', required=True, help='Output folder name on SSD')
+def transfer(ssd_path, output_dir):
+    """Transfer media to external SSD."""
+    click.echo(f"Transferring to SSD: {ssd_path}")
+    click.echo(f"Output directory: {output_dir}")
     
-    uploader = DriveUploader()
-    uploader.authenticate()
-    click.echo("✓ Authenticated with Google Drive")
-    # Upload logic to be implemented
+    transfer_manager = SSDTransfer(ssd_path)
+    if transfer_manager.verify_ssd():
+        click.echo("✓ SSD verified and accessible")
+        # Transfer logic to be implemented
+    else:
+        click.echo("✗ Error: Could not access SSD")
 
 
 @cli.command()
 @click.argument('source_paths', nargs=-1, type=click.Path(exists=True), required=True)
-@click.option('--output-dir', required=True, help='Google Drive folder name')
-def full_sync(source_paths, output_dir):
-    """Complete pipeline: scan, dedupe, upload."""
+@click.option('--ssd-path', required=True, type=click.Path(), help='Path to external SSD')
+@click.option('--output-dir', required=True, help='Output folder name on SSD')
+def full_sync(source_paths, ssd_path, output_dir):
+    """Complete pipeline: scan, dedupe, transfer to SSD."""
     click.echo("Starting full sync pipeline...")
     
     # Step 1: Scan
-    files = scan(source_paths)
+    click.echo("\n[1/3] Scanning for media files...")
+    scanner = FileScanner()
+    all_files = []
+    for path in source_paths:
+        files = scanner.scan(path)
+        all_files.extend(files)
+    click.echo(f"Found {len(all_files)} media files")
     
     # Step 2: Deduplicate
+    click.echo("\n[2/3] Detecting duplicates...")
     deduplicator = Deduplicator()
-    duplicates = deduplicator.find_duplicates(files)
+    duplicates = deduplicator.find_duplicates(all_files)
+    click.echo(f"Found {len(duplicates)} duplicate groups")
     
-    # Step 3: Upload
-    uploader = DriveUploader()
-    uploader.authenticate()
-    click.echo(f"\n✓ Full sync complete!")
+    # Step 3: Transfer
+    click.echo("\n[3/3] Transferring to SSD...")
+    transfer_manager = SSDTransfer(ssd_path)
+    if transfer_manager.verify_ssd():
+        click.echo("✓ SSD verified")
+        click.echo(f"\n✓ Full sync complete!")
+    else:
+        click.echo("✗ Error: Could not access SSD")
 
 
 if __name__ == '__main__':

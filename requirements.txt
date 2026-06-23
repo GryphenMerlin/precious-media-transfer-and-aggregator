@@ -6,10 +6,9 @@ click==8.1.7
 Pillow==10.1.0
 python-magic==0.4.27
 
-# Google Drive API
-google-auth-httplib2==0.2.0
-google-auth-oauthlib==1.2.0
-google-api-python-client==2.108.0
+# File transfer and system utilities
+shutil-disk==1.0.0
+psutil==5.9.8
 
 # GUI (PyQt5)
 PyQt5==5.15.10
